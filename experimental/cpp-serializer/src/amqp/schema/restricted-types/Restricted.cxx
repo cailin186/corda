@@ -1,4 +1,6 @@
 #include "Restricted.h"
+
+#include "Map.h"
 #include "List.h"
 #include "Enum.h"
 
@@ -103,7 +105,10 @@ Restricted::make(
                     std::move(choices_));
         }
     } else if (source_ == "map") {
-        throw std::runtime_error ("maps not supported");
+        return std::make_unique<amqp::internal::schema::Map> (
+                descriptor_, name_, label_, provides_, source_);
+    } else {
+        throw std::runtime_error ("Unknown restricted type");
     }
 }
 

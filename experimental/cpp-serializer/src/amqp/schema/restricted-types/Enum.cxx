@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include "debug.h"
+
 #include "List.h"
 #include "Composite.h"
 
@@ -55,13 +57,13 @@ Enum::dependsOn (const amqp::internal::schema::Restricted & lhs_) const {
             const auto & list { dynamic_cast<const class List &>(lhs_) };
 
             // does the left hand side depend on us
-          //  DBG ("  L/L a) " << list.listOf() << " == " << name() << std::endl); // NOLINT
+            DBG ("  L/L a) " << list.listOf() << " == " << name() << std::endl); // NOLINT
             if (list.listOf() == name()) {
                 rtn = 1;
             }
 
             // do we depend on the lhs
-            //DBG ("  L/L b) " << name() << " == " << list.name() << std::endl); // NOLINT
+            DBG ("  L/L b) " << name() << " == " << list.name() << std::endl); // NOLINT
             if (name() == list.name()) {
                 rtn = 2;
             }
@@ -87,13 +89,13 @@ amqp::internal::schema::
 Enum::dependsOn (const amqp::internal::schema::Composite & lhs_) const {
     auto rtn { 0 };
     for (const auto & field : lhs_.fields()) {
-//        DBG ("  L/C a) " << field->resolvedType() << " == " << name() << std::endl); // NOLINT
+        DBG ("L/C a) " << field->resolvedType() << " == " << name() << std::endl); // NOLINT
         if (field->resolvedType() == name()) {
             rtn = 1;
         }
     }
 
-  //  DBG ("  L/C b) " << name() << " == " << lhs_.name() << std::endl); // NOLINT
+    DBG ("  L/C b) " << name() << " == " << lhs_.name() << std::endl); // NOLINT
     if (name() == lhs_.name()) {
         rtn = 2;
     }

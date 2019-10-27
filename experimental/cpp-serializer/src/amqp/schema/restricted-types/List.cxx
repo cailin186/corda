@@ -6,22 +6,29 @@
 
 #include "schema/Composite.h"
 
-/******************************************************************************/
+/******************************************************************************
+ *
+ * Static member functions
+ *
+ ******************************************************************************/
 
-namespace {
 
-    std::pair<std::string, std::string>
-    listType (const std::string & list_) {
-        auto pos = list_.find ('<');
+std::pair<std::string, std::string>
+amqp::internal::schema::
+List::listType (const std::string & list_) {
+    auto pos = list_.find ('<');
 
-        return std::make_pair (
-               std::string { list_.substr (0, pos) },
-               std::string { list_.substr(pos + 1, list_.size() - pos - 2) }
-        );
-    }
+    return std::make_pair (
+           std::string { list_.substr (0, pos) },
+           std::string { list_.substr(pos + 1, list_.size() - pos - 2) }
+    );
 }
 
-/******************************************************************************/
+/******************************************************************************
+ *
+ * Non static member functions
+ *
+ ******************************************************************************/
 
 amqp::internal::schema::
 List::List (

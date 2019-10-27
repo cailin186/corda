@@ -182,6 +182,18 @@ CompositeFactory::processEnum (
 
 std::shared_ptr<amqp::internal::reader::Reader>
 amqp::internal::
+CompositeFactory::processMap (
+        const amqp::internal::schema::Map & map_
+) {
+    DBG ("Processing Map - "
+        << map_.mapOf().first.get() << " "
+        << map_.mapOf().second.get() << std::endl); // NOLINT
+}
+
+/******************************************************************************/
+
+std::shared_ptr<amqp::internal::reader::Reader>
+amqp::internal::
 CompositeFactory::processList (
     const amqp::internal::schema::List & list_
 ) {
@@ -213,23 +225,23 @@ CompositeFactory::processRestricted (
         const amqp::internal::schema::AMQPTypeNotation & type_)
 {
     DBG ("processRestricted - " << type_.name() << std::endl); // NOLINT
-    const auto & restricted = dynamic_cast<const amqp::internal::schema::Restricted &> (
+    const auto & restricted = dynamic_cast<const schema::Restricted &> (
             type_);
 
     switch (restricted.restrictedType()) {
         case schema::Restricted::RestrictedTypes::List : {
             return processList (
-                    dynamic_cast<const amqp::internal::schema::List &> (restricted));
+                dynamic_cast<const schema::List &> (restricted));
         }
         case schema::Restricted::RestrictedTypes::Enum : {
             return processEnum (
-                    dynamic_cast<const amqp::internal::schema::Enum &> (restricted));
+                dynamic_cast<const schema::Enum &> (restricted));
         }
-        case schema::Restricted::RestrictedTypes::Map :{
-            throw std::runtime_error ("Cannot process maps");
+        case schema::Restricted::RestrictedTypes::Map : {
+            return processMap (
+                dynamic_cast<const schema::Map &> (restricted));
         }
     }
-
 
     DBG ("  ProcessRestricted: Returning nullptr"); // NOLINT
     return nullptr;

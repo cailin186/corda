@@ -6,16 +6,15 @@
 
 namespace amqp::internal::schema {
 
-    class List : public Restricted {
+    class Map : public Restricted {
         public :
-            static std::pair<std::string, std::string> listType (
-                    const std::string &);
-
+            static std::tuple<std::string, std::string, std::string>
+            mapType (const std::string &);
         private :
-            std::vector<std::string> m_listOf;
+            std::vector<std::string> m_mapOf;
 
         public :
-            List (
+            Map (
                 uPtr<Descriptor> & descriptor_,
                 const std::string &,
                 const std::string &,
@@ -25,7 +24,9 @@ namespace amqp::internal::schema {
             std::vector<std::string>::const_iterator begin() const override;
             std::vector<std::string>::const_iterator end() const override;
 
-            const std::string & listOf() const;
+            std::pair<
+                std::reference_wrapper<const std::string>,
+                std::reference_wrapper<const std::string>> mapOf() const;
 
             int dependsOn (const Restricted &) const override;
             int dependsOn (const class Composite &) const override;
