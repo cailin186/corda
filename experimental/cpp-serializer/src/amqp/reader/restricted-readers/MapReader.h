@@ -11,7 +11,8 @@ namespace amqp::internal::reader {
     class MapReader : public RestrictedReader {
         private :
             // How to read the underlying types
-            std::weak_ptr<Reader> m_reader;
+            std::weak_ptr<Reader> m_keyReader;
+            std::weak_ptr<Reader> m_valueReader;
 
             std::list<uPtr<amqp::reader::IValue>> dump_(
                     pn_data_t *,
@@ -20,9 +21,11 @@ namespace amqp::internal::reader {
         public :
             MapReader (
                 const std::string & type_,
-                std::weak_ptr<Reader> reader_
+                std::weak_ptr<Reader> keyReader_,
+                std::weak_ptr<Reader> valueReader_
             ) : RestrictedReader (type_)
-              , m_reader (std::move (reader_))
+              , m_keyReader (std::move (keyReader_))
+              , m_valueReader (std::move (valueReader_))
             { }
 
             ~MapReader() final = default;

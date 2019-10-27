@@ -59,6 +59,9 @@ namespace amqp::internal {
 
             std::shared_ptr<reader::Reader> processMap (
                     const schema::Map &);
+
+            decltype(m_readersByType)::mapped_type
+            fetchReaderForRestricted (const std::string &);
     };
 
 }

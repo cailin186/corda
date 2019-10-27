@@ -15,10 +15,22 @@ MapReader::restrictedType() const {
 std::list<uPtr<amqp::reader::IValue>>
 amqp::internal::reader::
 MapReader::dump_(
-    pn_data_t *,
-    const SchemaType &
+    pn_data_t * data_,
+    const SchemaType & schema_
 ) const {
+    std::cout << "DUMP" << std::endl;
 
+    proton::is_described (data_);
+
+    decltype (dump_ (data_, schema_)) read;
+
+    {
+        proton::auto_enter ae (data_);
+
+        std::cout << data_ << std::endl;
+    }
+
+    return read;
 }
 
 /******************************************************************************/
