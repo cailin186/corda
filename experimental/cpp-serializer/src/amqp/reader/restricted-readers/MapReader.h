@@ -14,7 +14,8 @@ namespace amqp::internal::reader {
             std::weak_ptr<Reader> m_keyReader;
             std::weak_ptr<Reader> m_valueReader;
 
-            std::list<uPtr<amqp::reader::IValue>> dump_(
+//            sVec<uPtr<amqp::internal::reader::ValuePair>> dump_ (
+            sVec<uPtr<amqp::reader::IValue>> dump_(
                     pn_data_t *,
                     const SchemaType &) const;
 

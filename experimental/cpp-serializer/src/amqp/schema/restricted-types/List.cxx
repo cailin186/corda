@@ -93,7 +93,16 @@ List::dependsOn (const amqp::internal::schema::Restricted & lhs_) const {
             if (listOf() == list.name()) {
                 rtn = 2;
             }
+
+            break;
         }
+        case RestrictedTypes::Map : {
+            break;
+        }
+        case RestrictedTypes::Enum : {
+            break;
+        }
+
     }
 
     return rtn;
