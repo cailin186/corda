@@ -51,6 +51,13 @@ Map::Map (
         provides_,
         amqp::internal::schema::Restricted::RestrictedTypes::Map)
 {
+    std::cout << descriptor() << " " << name() << " " << label() << " " << source()
+                << std::endl;
+
+    for (const auto & i : provides()) {
+        std::cout << "  " << i << std::endl;
+    }
+
     auto [map, of, to] = mapType (name_);
     m_mapOf = { of, to };
 }

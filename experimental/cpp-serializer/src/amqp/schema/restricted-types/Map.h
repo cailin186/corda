@@ -10,6 +10,7 @@ namespace amqp::internal::schema {
         public :
             static std::tuple<std::string, std::string, std::string>
             mapType (const std::string &);
+
         private :
             std::vector<std::string> m_mapOf;
 

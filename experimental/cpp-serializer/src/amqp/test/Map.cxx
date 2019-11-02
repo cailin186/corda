@@ -1,8 +1,13 @@
 #include <gtest/gtest.h>
 
+#include "Descriptor.h"
 #include "restricted-types/Map.h"
 
-/******************************************************************************/
+/******************************************************************************
+ *
+ * mapType Tests
+ *
+ ******************************************************************************/
 
 TEST (Map, name1) {
     auto [map, of, to] = amqp::internal::schema::Map::mapType (
@@ -35,4 +40,37 @@ TEST (Map, name3) {
     ASSERT_EQ("java.util.List<string>", to);
 }
 
+/******************************************************************************
+ *
+ *
+ *
+ ******************************************************************************/
+
+namespace {
+    std::unique_ptr<amqp::internal::schema::Map>
+    map (const std::string & name_) {
+        auto desc = std::make_unique<amqp::internal::schema::Descriptor> (
+            "net.corda.test1");
+
+        std::vector<std::string> provides { };
+
+        return std::make_unique<amqp::internal::schema::Map>(
+           desc,
+           name_,
+           "label",
+           provides,
+           "map"
+        );
+    }
+}
+
 /******************************************************************************/
+
+/*
+TEST (MAP, dependsOn1) {
+    auto m = map ()
+}
+ */
+
+/******************************************************************************/
+

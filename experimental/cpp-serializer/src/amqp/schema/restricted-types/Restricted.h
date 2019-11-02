@@ -91,6 +91,10 @@ namespace amqp::internal::schema {
             int dependsOn (const OrderedTypeNotation &) const override;
             int dependsOn (const Restricted &) const override = 0;
             int dependsOn (const class Composite &) const override = 0;
+
+            const decltype(m_provides) & provides() const { return m_provides; }
+            const decltype(m_label) & label() const { return m_label; }
+            const decltype(m_source) & source() const { return m_source; }
     };
 
 
