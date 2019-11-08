@@ -60,7 +60,7 @@ namespace amqp::internal::schema {
                     typename std::list<std::list<uPtr<T>>>::iterator &);
 
         public :
-            void insert(uPtr<T> && ptr);
+            void insert (uPtr<T> && ptr);
 
             friend std::ostream & ::operator << <> (
                     std::ostream &,
@@ -85,7 +85,7 @@ operator << (
         std::ostream &stream_,
         const amqp::internal::schema::OrderedTypeNotations<T> &otn_
 ) {
-    int idx1{0};
+    int idx1 {0};
     for (const auto &i : otn_.m_schemas) {
         stream_ << "level " << ++idx1 << std::endl;
         for (const auto &j : i) {

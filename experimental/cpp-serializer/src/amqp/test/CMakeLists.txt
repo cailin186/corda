@@ -6,6 +6,7 @@ set (amqp-test-sources
         Pair.cxx
         List.cxx
         Single.cxx
+        TestUtils.cxx
         OrderedTypeNotationTest.cxx
 )
 

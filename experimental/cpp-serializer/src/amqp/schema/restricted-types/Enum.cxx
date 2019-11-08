@@ -50,36 +50,37 @@ Enum::end() const {
 
 int
 amqp::internal::schema::
-Enum::dependsOn (const amqp::internal::schema::Restricted & lhs_) const {
-    auto rtn { 0 };
-    switch (lhs_.restrictedType()) {
-        case RestrictedTypes::List : {
-            const auto & list { dynamic_cast<const class List &>(lhs_) };
+Enum::dependsOnMap (const amqp::internal::schema::Map & map_) const {
 
-            // does the left hand side depend on us
-            DBG ("  L/L a) " << list.listOf() << " == " << name() << std::endl); // NOLINT
-            if (list.listOf() == name()) {
-                rtn = 1;
-            }
+}
 
-            // do we depend on the lhs
-            DBG ("  L/L b) " << name() << " == " << list.name() << std::endl); // NOLINT
-            if (name() == list.name()) {
-                rtn = 2;
-            }
+/******************************************************************************/
 
-            break;
-        }
-        case RestrictedTypes::Enum : {
-            break;
-        }
-        case RestrictedTypes::Map : {
-
-        }
-
+int
+amqp::internal::schema::
+Enum::dependsOnList (const amqp::internal::schema::List & list_) const {
+    // does the left hand side depend on us
+    DBG ("  L/L a) " << list.listOf() << " == " << name() << std::endl); // NOLINT
+    if (list_.listOf() == name()) {
+        return 1;
     }
 
-    return rtn;
+    // do we depend on the lhs
+    DBG ("  L/L b) " << name() << " == " << list.name() << std::endl); // NOLINT
+    if (name() == list_.name()) {
+        return 2;
+    }
+
+    return 0;
+}
+
+/******************************************************************************/
+
+int
+amqp::internal::schema::
+Enum::dependsOnEnum (const amqp::internal::schema::Enum &) const {
+    // enums should never depend on one another so just return 0;
+    return 0;
 }
 
 /******************************************************************************/

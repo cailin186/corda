@@ -2,6 +2,19 @@
 
 #include "Restricted.h"
 
+/******************************************************************************
+ *
+ * Forward class declarations
+ *
+ ******************************************************************************/
+
+namespace amqp::internal::schema {
+
+    class List;
+    class Enum;
+
+}
+
 /******************************************************************************/
 
 namespace amqp::internal::schema {
@@ -13,6 +26,10 @@ namespace amqp::internal::schema {
 
         private :
             std::vector<std::string> m_mapOf;
+
+            int dependsOnMap (const Map &) const override;
+            int dependsOnList (const class List &) const override;
+            int dependsOnEnum (const class Enum &) const override;
 
         public :
             Map (
@@ -29,8 +46,8 @@ namespace amqp::internal::schema {
                 std::reference_wrapper<const std::string>,
                 std::reference_wrapper<const std::string>> mapOf() const;
 
-            int dependsOn (const Restricted &) const override;
             int dependsOn (const class Composite &) const override;
+            int dependsOn (const class Restricted &) const override;
     };
 
 }

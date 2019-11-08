@@ -1,5 +1,7 @@
 #include <iostream>
 #include "List.h"
+#include "Map.h"
+#include "Enum.h"
 
 #include "debug.h"
 #include "colours.h"
@@ -45,7 +47,13 @@ List::List (
         amqp::internal::schema::Restricted::RestrictedTypes::List)
   , m_listOf { listType(name_).second }
 {
+    std::cout << descriptor() << " " << name() << " " << label()
+              << " " << source()
+              << std::endl;
 
+    for (const auto & i : provides()) {
+        std::cout << "  " << i << std::endl;
+    }
 }
 
 /******************************************************************************/
@@ -76,36 +84,46 @@ List::listOf() const {
 
 int
 amqp::internal::schema::
-List::dependsOn (const amqp::internal::schema::Restricted & lhs_) const {
+List::dependsOnMap (const amqp::internal::schema::Map & map_) const {
+    // does lhs_ depend on us
+    auto lhsMapOf { map_.mapOf() };
+    if (lhsMapOf.first.get() == name() || lhsMapOf.second.get() == name()) {
+        return 1;
+    }
+
+    // do we depend on the lhs
+    if (listOf() == map_.name()) {
+        return 2;
+    }
+
+    return 0;
+}
+
+/******************************************************************************/
+
+int
+amqp::internal::schema::
+List::dependsOnList (const amqp::internal::schema::List & list_) const {
     auto rtn { 0 };
-    switch (lhs_.restrictedType()) {
-        case RestrictedTypes::List : {
-            const auto & list { dynamic_cast<const List &>(lhs_) };
+    // does the left hand side depend on us
+    if (list_.listOf() == name()) {
+        rtn = 1;
+    }
 
-            // does the left hand side depend on us
-            DBG ("  L/L a) " << list.listOf() << " == " << name() << std::endl); // NOLINT
-            if (list.listOf() == name()) {
-                rtn = 1;
-            }
-
-            // do we depend on the lhs
-            DBG ("  L/L b) " << listOf() << " == " << list.name() << std::endl); // NOLINT
-            if (listOf() == list.name()) {
-                rtn = 2;
-            }
-
-            break;
-        }
-        case RestrictedTypes::Map : {
-            break;
-        }
-        case RestrictedTypes::Enum : {
-            break;
-        }
-
+    // do we depend on the lhs
+    if (listOf() == list_.name()) {
+        rtn = 2;
     }
 
     return rtn;
+}
+
+/******************************************************************************/
+
+int
+amqp::internal::schema::
+List::dependsOnEnum (const amqp::internal::schema::Enum & enum_) const {
+
 }
 
 /******************************************************************************/

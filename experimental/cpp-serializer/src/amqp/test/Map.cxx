@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include "TestUtils.h"
+
 #include "Descriptor.h"
 #include "restricted-types/Map.h"
 
@@ -46,31 +48,54 @@ TEST (Map, name3) {
  *
  ******************************************************************************/
 
-namespace {
-    std::unique_ptr<amqp::internal::schema::Map>
-    map (const std::string & name_) {
-        auto desc = std::make_unique<amqp::internal::schema::Descriptor> (
-            "net.corda.test1");
-
-        std::vector<std::string> provides { };
-
-        return std::make_unique<amqp::internal::schema::Map>(
-           desc,
-           name_,
-           "label",
-           provides,
-           "map"
-        );
-    }
-}
+using namespace amqp::internal::schema;
 
 /******************************************************************************/
 
-/*
 TEST (MAP, dependsOn1) {
-    auto m = map ()
+    auto result {
+            "level 1\n"
+            "    * java.util.List<string>\n"
+            "\n"
+            "level 2\n"
+            "    * java.util.Map<int, java.util.List<string>>\n\n"
+    };
+
+    {
+        OrderedTypeNotations<Restricted> otn;
+
+        auto l = test::list("string");
+        auto m = test::map("int", l->name());
+
+        otn.insert(std::move(l));
+        otn.insert(std::move(m));
+
+        std::stringstream ss;
+        ss << otn;
+
+        std::cout << ss.str();
+
+        ASSERT_EQ (result, ss.str());
+    }
+
+    // Same test but reverse the insertion order
+    {
+        OrderedTypeNotations<Restricted> otn;
+
+        auto l = test::list("string");
+        auto m = test::map("int", l->name());
+
+        otn.insert(std::move(m));
+        otn.insert(std::move(l));
+
+        std::stringstream ss;
+        ss << otn;
+
+        std::cout << ss.str();
+
+        ASSERT_EQ (result, ss.str());
+    }
 }
- */
 
 /******************************************************************************/
 

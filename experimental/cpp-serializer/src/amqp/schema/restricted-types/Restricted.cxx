@@ -149,8 +149,31 @@ Restricted::restrictedType() const {
 int
 amqp::internal::schema::
 Restricted::dependsOn (const OrderedTypeNotation & rhs_) const {
-    return dynamic_cast<const AMQPTypeNotation &>(rhs_).dependsOn(*this);
+    return dynamic_cast<const AMQPTypeNotation &>(rhs_).dependsOn (*this);
 }
 
 /*********************************************************o*********************/
 
+/*
+ * If the left hand side of the original call, restricted_ in this case,
+ * depends on this instance then we return 1.
+ *
+ * If this instance of a map depends on the parameter we return 2
+ */
+int
+amqp::internal::schema::
+Restricted::dependsOn (const Restricted & lhs_) const  {
+    switch ( lhs_.restrictedType()) {
+        case Restricted::RestrictedTypes::Map :
+            return dependsOnMap (
+                static_cast<const amqp::internal::schema::Map &>(lhs_)); // NOLINT
+        case Restricted::RestrictedTypes::List :
+            return dependsOnList (
+                static_cast<const amqp::internal::schema::List &>(lhs_)); // NOLINT
+        case Restricted::RestrictedTypes::Enum :
+            return dependsOnEnum (
+                static_cast<const amqp::internal::schema::Enum &>(lhs_)); // NOLINT
+    }
+}
+
+/*********************************************************o*********************/
