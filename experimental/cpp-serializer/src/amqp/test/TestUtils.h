@@ -7,11 +7,14 @@
 /******************************************************************************/
 
 namespace test {
-    std::unique_ptr <amqp::internal::schema::Map>
+    uPtr <amqp::internal::schema::Map>
     map (const std::string &, const std::string &);
 
-    std::unique_ptr <amqp::internal::schema::List>
+    uPtr <amqp::internal::schema::List>
     list (const std::string & of_);
+
+    uPtr <amqp::internal::schema::Enum>
+    eNum (const std::string & e_);
 }
 
 /******************************************************************************/

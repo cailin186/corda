@@ -9,7 +9,6 @@
 
 /******************************************************************************/
 
-
 amqp::internal::schema::
 Enum::Enum (
         uPtr<Descriptor> & descriptor_,
@@ -27,6 +26,7 @@ Enum::Enum (
     , m_enum { name_ }
     , m_choices (std::move (choices_))
 {
+    std::cout << name_ << std::endl;
 
 }
 
@@ -87,6 +87,14 @@ Enum::dependsOnEnum (const amqp::internal::schema::Enum &) const {
 
 int
 amqp::internal::schema::
+Enum::dependsOn (const amqp::internal::schema::Restricted & lhs_) const {
+    return Restricted::dependsOn (lhs_);
+}
+
+/*********************************************************o*********************/
+
+int
+amqp::internal::schema::
 Enum::dependsOn (const amqp::internal::schema::Composite & lhs_) const {
     auto rtn { 0 };
     for (const auto & field : lhs_.fields()) {
@@ -120,3 +128,4 @@ Enum::makeChoices() const {
 }
 
 /*********************************************************o*********************/
+

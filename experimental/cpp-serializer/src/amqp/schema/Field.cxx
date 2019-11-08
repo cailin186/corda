@@ -12,7 +12,9 @@ operator << (std::ostream & stream_, const Field & field_) {
     std::stringstream ss;
     for (auto &i: field_.m_requires) { ss << i; }
 
-    stream_ << field_.m_name << " : " << field_.m_type.first << " : [" << ss.str() << "]" << std::endl;
+    stream_ << field_.m_name
+        << " : " << field_.m_type.first
+        << " : [" << ss.str() << "]" << std::endl;
 
     return stream_;
 }

@@ -41,9 +41,7 @@ namespace amqp::internal::schema {
             std::vector<std::string>::const_iterator end() const override;
 
             int dependsOn (const class Composite &) const override;
-            int dependsOn (const class Restricted & lhs_) const override {
-                return Restricted::dependsOn (lhs_);
-            }
+            int dependsOn (const class Restricted &) const override;
 
             std::vector<std::string> makeChoices() const;
     };

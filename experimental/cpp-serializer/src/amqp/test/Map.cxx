@@ -4,6 +4,8 @@
 
 #include "Descriptor.h"
 #include "restricted-types/Map.h"
+#include "restricted-types/List.h"
+#include "restricted-types/Enum.h"
 
 /******************************************************************************
  *
@@ -73,8 +75,6 @@ TEST (MAP, dependsOn1) {
         std::stringstream ss;
         ss << otn;
 
-        std::cout << ss.str();
-
         ASSERT_EQ (result, ss.str());
     }
 
@@ -91,7 +91,121 @@ TEST (MAP, dependsOn1) {
         std::stringstream ss;
         ss << otn;
 
-        std::cout << ss.str();
+        ASSERT_EQ (result, ss.str());
+    }
+}
+
+/******************************************************************************/
+
+TEST (MAP, dependsOn2) {
+    auto result {
+        "level 1\n"
+        "    * net.corda.eee\n"
+        "\n"
+        "level 2\n"
+        "    * java.util.List<net.corda.eee>\n"
+        "\n"
+        "level 3\n"
+        "    * java.util.Map<int, java.util.List<net.corda.eee>>\n\n"
+    };
+
+    {
+        OrderedTypeNotations<Restricted> otn;
+
+        auto e = test::eNum("eee");
+        auto l = test::list(e->name());
+        auto m = test::map("int", l->name());
+
+        otn.insert(std::move(l));
+        otn.insert(std::move(m));
+        otn.insert(std::move(e));
+
+        std::stringstream ss;
+        ss << otn;
+
+        ASSERT_EQ (result, ss.str());
+    }
+    {
+        OrderedTypeNotations<Restricted> otn;
+
+        auto e = test::eNum("eee");
+        auto l = test::list(e->name());
+        auto m = test::map("int", l->name());
+
+        otn.insert(std::move(l));
+        otn.insert(std::move(e));
+        otn.insert(std::move(m));
+
+        std::stringstream ss;
+        ss << otn;
+
+        ASSERT_EQ (result, ss.str());
+    }
+    {
+        OrderedTypeNotations<Restricted> otn;
+
+        auto e = test::eNum("eee");
+        auto l = test::list(e->name());
+        auto m = test::map("int", l->name());
+
+        otn.insert(std::move(m));
+        otn.insert(std::move(l));
+        otn.insert(std::move(e));
+
+        std::stringstream ss;
+        ss << otn;
+
+        ASSERT_EQ (result, ss.str());
+    }
+    {
+        OrderedTypeNotations<Restricted> otn;
+
+        auto e = test::eNum ("eee");
+        auto l = test::list (e->name());
+        auto m = test::map ("int", l->name());
+
+        otn.insert (std::move (m));
+
+        std::cout << otn << std::endl;
+        otn.insert (std::move (e));
+        std::cout << otn << std::endl;
+        otn.insert (std::move (l));
+        std::cout << otn << std::endl;
+
+        std::stringstream ss;
+        ss << otn;
+
+        ASSERT_EQ (result, ss.str());
+    }
+    {
+        OrderedTypeNotations<Restricted> otn;
+
+        auto e = test::eNum("eee");
+        auto l = test::list(e->name());
+        auto m = test::map("int", l->name());
+
+        otn.insert (std::move (e));
+        otn.insert (std::move (l));
+        otn.insert (std::move (m));
+
+        std::stringstream ss;
+        ss << otn;
+
+        ASSERT_EQ (result, ss.str());
+    }
+    {
+        OrderedTypeNotations<Restricted> otn;
+
+        auto e = test::eNum ("eee");
+        auto l = test::list (e->name());
+        auto m = test::map ("int", l->name());
+
+        otn.insert (std::move (e));
+        otn.insert (std::move (m));
+        otn.insert (std::move (l));
+
+        std::stringstream ss;
+        ss << otn;
 
         ASSERT_EQ (result, ss.str());
     }

@@ -47,13 +47,6 @@ List::List (
         amqp::internal::schema::Restricted::RestrictedTypes::List)
   , m_listOf { listType(name_).second }
 {
-    std::cout << descriptor() << " " << name() << " " << label()
-              << " " << source()
-              << std::endl;
-
-    for (const auto & i : provides()) {
-        std::cout << "  " << i << std::endl;
-    }
 }
 
 /******************************************************************************/
@@ -104,18 +97,17 @@ List::dependsOnMap (const amqp::internal::schema::Map & map_) const {
 int
 amqp::internal::schema::
 List::dependsOnList (const amqp::internal::schema::List & list_) const {
-    auto rtn { 0 };
     // does the left hand side depend on us
     if (list_.listOf() == name()) {
-        rtn = 1;
+        return 1;
     }
 
     // do we depend on the lhs
     if (listOf() == list_.name()) {
-        rtn = 2;
+        return 2;
     }
 
-    return rtn;
+    return 0;
 }
 
 /******************************************************************************/
@@ -123,7 +115,13 @@ List::dependsOnList (const amqp::internal::schema::List & list_) const {
 int
 amqp::internal::schema::
 List::dependsOnEnum (const amqp::internal::schema::Enum & enum_) const {
+    // an enum cannot depend on us so don't bother checking, lets just check
+    // if we depend on it
+    if (listOf() == enum_.name()) {
+        return 2;
+    }
 
+    return 0;
 }
 
 /******************************************************************************/

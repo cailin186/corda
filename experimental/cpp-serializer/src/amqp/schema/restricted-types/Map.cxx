@@ -1,6 +1,7 @@
 #include "Map.h"
 #include "List.h"
 #include "Enum.h"
+#include "Composite.h"
 
 /******************************************************************************
  *
@@ -53,13 +54,6 @@ Map::Map (
         provides_,
         amqp::internal::schema::Restricted::RestrictedTypes::Map)
 {
-    std::cout << descriptor() << " " << name() << " " << label() << " " << source()
-                << std::endl;
-
-    for (const auto & i : provides()) {
-        std::cout << "  " << i << std::endl;
-    }
-
     auto [map, of, to] = mapType (name_);
     m_mapOf = { of, to };
 }
@@ -149,8 +143,22 @@ Map::dependsOnEnum (const amqp::internal::schema::Enum & lhs_) const {
 
 int
 amqp::internal::schema::
-Map::dependsOn (const class Composite &) const  {
+Map::dependsOn (const amqp::internal::schema::Composite & lhs_) const  {
+    auto rtn { 0 };
 
+    // does lhs_ depend on us
+    for (const auto & field : lhs_.fields()) {
+        if (field->resolvedType() == name()) {
+            rtn = 1;
+        }
+    }
+
+    // do we depend on the lhs
+    if (m_mapOf[0] == lhs_.name() || m_mapOf[1] == lhs_.name()) {
+        rtn = 2;
+    }
+
+    return rtn;
 }
 
 /******************************************************************************/
