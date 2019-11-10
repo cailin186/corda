@@ -100,10 +100,10 @@ CompositeFactory::process (
         schema_.name(),
         [& schema_, this] () -> std::shared_ptr<reader::Reader> {
             switch (schema_.type()) {
-                case amqp::internal::schema::AMQPTypeNotation::Composite : {
+                case amqp::internal::schema::AMQPTypeNotation::composite_t : {
                     return processComposite (schema_);
                 }
-                case amqp::internal::schema::AMQPTypeNotation::Restricted : {
+                case amqp::internal::schema::AMQPTypeNotation::restricted_t : {
                     return processRestricted (schema_);
                 }
             }
@@ -242,15 +242,15 @@ CompositeFactory::processRestricted (
             type_);
 
     switch (restricted.restrictedType()) {
-        case schema::Restricted::RestrictedTypes::List : {
+        case schema::Restricted::RestrictedTypes::list_t : {
             return processList (
                 dynamic_cast<const schema::List &> (restricted));
         }
-        case schema::Restricted::RestrictedTypes::Enum : {
+        case schema::Restricted::RestrictedTypes::enum_t : {
             return processEnum (
                 dynamic_cast<const schema::Enum &> (restricted));
         }
-        case schema::Restricted::RestrictedTypes::Map : {
+        case schema::Restricted::RestrictedTypes::map_t : {
             return processMap (
                 dynamic_cast<const schema::Map &> (restricted));
         }

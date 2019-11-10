@@ -9,7 +9,7 @@
 amqp::internal::schema::Restricted::RestrictedTypes
 amqp::internal::reader::
 MapReader::restrictedType() const {
-    return schema::Restricted::Restricted::Map;
+    return schema::Restricted::Restricted::map_t;
 }
 
 /******************************************************************************/

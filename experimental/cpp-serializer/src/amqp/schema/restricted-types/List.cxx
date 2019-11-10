@@ -44,7 +44,7 @@ List::List (
         name_,
         label_,
         provides_,
-        amqp::internal::schema::Restricted::RestrictedTypes::List)
+        amqp::internal::schema::Restricted::RestrictedTypes::list_t)
   , m_listOf { listType(name_).second }
 {
 }
@@ -78,14 +78,15 @@ List::listOf() const {
 int
 amqp::internal::schema::
 List::dependsOnMap (const amqp::internal::schema::Map & map_) const {
-    // does lhs_ depend on us
-    auto lhsMapOf { map_.mapOf() };
-    if (lhsMapOf.first.get() == name() || lhsMapOf.second.get() == name()) {
+    // do we depend on the lhs
+    if (listOf() == map_.name()) {
         return 1;
     }
 
-    // do we depend on the lhs
-    if (listOf() == map_.name()) {
+    // does lhs_ depend on us
+    auto lhsMapOf { map_.mapOf() };
+
+    if (lhsMapOf.first.get() == name() || lhsMapOf.second.get() == name()) {
         return 2;
     }
 
@@ -97,13 +98,13 @@ List::dependsOnMap (const amqp::internal::schema::Map & map_) const {
 int
 amqp::internal::schema::
 List::dependsOnList (const amqp::internal::schema::List & list_) const {
-    // does the left hand side depend on us
-    if (list_.listOf() == name()) {
+    // do we depend on the lhs
+    if (listOf() == list_.name()) {
         return 1;
     }
 
-    // do we depend on the lhs
-    if (listOf() == list_.name()) {
+    // does the left hand side depend on us
+    if (list_.listOf() == name()) {
         return 2;
     }
 
@@ -118,7 +119,7 @@ List::dependsOnEnum (const amqp::internal::schema::Enum & enum_) const {
     // an enum cannot depend on us so don't bother checking, lets just check
     // if we depend on it
     if (listOf() == enum_.name()) {
-        return 2;
+        return 1;
     }
 
     return 0;
@@ -128,21 +129,18 @@ List::dependsOnEnum (const amqp::internal::schema::Enum & enum_) const {
 
 int
 amqp::internal::schema::
-List::dependsOn (const amqp::internal::schema::Composite & lhs_) const {
-    auto rtn { 0 };
+List::dependsOnRHS (const amqp::internal::schema::Composite & lhs_) const {
+    if (listOf() == lhs_.name()) {
+        return 1;
+    }
+
     for (const auto & field : lhs_.fields()) {
-        DBG ("  L/C a) " << field->resolvedType() << " == " << name() << std::endl); // NOLINT
         if (field->resolvedType() == name()) {
-            rtn = 1;
+            return 2;
         }
     }
 
-    DBG ("  L/C b) " << listOf() << " == " << lhs_.name() << std::endl); // NOLINT
-    if (listOf() == lhs_.name()) {
-        rtn = 2;
-    }
-
-    return rtn;
+    return 0;
 }
 
 /*********************************************************o*********************/

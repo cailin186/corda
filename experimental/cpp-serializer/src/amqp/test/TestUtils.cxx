@@ -83,9 +83,9 @@ eNum (const std::string & e_) {
 
     sVec<uPtr<Choice>> choices (2);
     choices.emplace_back(
-            std::move (std::make_unique<Choice>(Choice ("a"))));
+            (std::make_unique<Choice>(Choice ("a"))));
     choices.emplace_back(
-            std::move (std::make_unique<Choice>(Choice ("b"))));
+            (std::make_unique<Choice>(Choice ("b"))));
 
     return std::make_unique<amqp::internal::schema::Enum>(
             desc,

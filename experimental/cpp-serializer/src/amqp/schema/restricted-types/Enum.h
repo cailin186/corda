@@ -2,19 +2,6 @@
 
 #include "Restricted.h"
 
-/******************************************************************************
- *
- * Forward class declarations
- *
- ******************************************************************************/
-
-namespace amqp::internal::schema {
-
-    class Map;
-    class List;
-
-}
-
 /******************************************************************************/
 
 namespace amqp::internal::schema {
@@ -24,8 +11,8 @@ namespace amqp::internal::schema {
             std::vector<std::string> m_enum;
             std::vector<uPtr<Choice>> m_choices;
 
-            int dependsOnMap (const class Map &) const override;
-            int dependsOnList (const class List &) const override;
+            int dependsOnMap (const Map &) const override;
+            int dependsOnList (const List &) const override;
             int dependsOnEnum (const Enum &) const override;
 
         public :
@@ -40,8 +27,7 @@ namespace amqp::internal::schema {
             std::vector<std::string>::const_iterator begin() const override;
             std::vector<std::string>::const_iterator end() const override;
 
-            int dependsOn (const class Composite &) const override;
-            int dependsOn (const class Restricted &) const override;
+            int dependsOnRHS (const Composite &) const override;
 
             std::vector<std::string> makeChoices() const;
     };

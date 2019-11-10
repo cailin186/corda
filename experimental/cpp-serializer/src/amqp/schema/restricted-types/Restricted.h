@@ -39,7 +39,7 @@ namespace amqp::internal::schema {
         public :
             friend std::ostream & operator << (std::ostream &, const Restricted&);
 
-            enum RestrictedTypes { List, Map, Enum };
+            enum RestrictedTypes { list_t, map_t, enum_t };
 
         private :
             // could be null in the stream... not sure that information is
@@ -69,9 +69,9 @@ namespace amqp::internal::schema {
                 std::vector<std::string>,
                 const RestrictedTypes &);
 
-            virtual int dependsOnMap (const class Map &) const = 0;
-            virtual int dependsOnList (const class List &) const = 0;
-            virtual int dependsOnEnum (const class Enum &) const = 0;
+            virtual int dependsOnMap (const Map &) const = 0;
+            virtual int dependsOnList (const List &) const = 0;
+            virtual int dependsOnEnum (const Enum &) const = 0;
 
         public :
             static std::unique_ptr<Restricted> make(
@@ -96,9 +96,10 @@ namespace amqp::internal::schema {
             virtual std::vector<std::string>::const_iterator begin() const = 0;
             virtual std::vector<std::string>::const_iterator end() const = 0;
 
-            int dependsOn (const class OrderedTypeNotation &) const override;
-            int dependsOn (const Restricted &) const override;
-            int dependsOn (const class Composite &) const override = 0;
+            int dependsOn (const OrderedTypeNotation &) const override;
+            int dependsOnRHS (const Restricted &) const override;
+
+            int dependsOnRHS (const Composite &) const override = 0;
 
             const decltype (m_provides) & provides() const { return m_provides; }
             const decltype (m_label) & label() const { return m_label; }

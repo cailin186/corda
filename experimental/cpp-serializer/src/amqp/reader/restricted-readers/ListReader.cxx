@@ -11,7 +11,7 @@
 amqp::internal::schema::Restricted::RestrictedTypes
 amqp::internal::reader::
 ListReader::restrictedType() const {
-    return internal::schema::Restricted::RestrictedTypes::List;
+    return internal::schema::Restricted::RestrictedTypes::list_t;
 }
 
 /******************************************************************************/

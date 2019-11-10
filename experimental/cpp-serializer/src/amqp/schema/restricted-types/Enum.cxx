@@ -4,6 +4,7 @@
 
 #include "debug.h"
 
+#include "Map.h"
 #include "List.h"
 #include "Composite.h"
 
@@ -22,12 +23,10 @@ Enum::Enum (
         name_,
         label_,
         provides_,
-        amqp::internal::schema::Restricted::RestrictedTypes::Enum)
+        amqp::internal::schema::Restricted::RestrictedTypes::enum_t)
     , m_enum { name_ }
     , m_choices (std::move (choices_))
 {
-    std::cout << name_ << std::endl;
-
 }
 
 /******************************************************************************/
@@ -51,7 +50,13 @@ Enum::end() const {
 int
 amqp::internal::schema::
 Enum::dependsOnMap (const amqp::internal::schema::Map & map_) const {
+    // does lhs_ depend on us
+    auto lhsMapOf { map_.mapOf() };
+    if (lhsMapOf.first.get() == name() || lhsMapOf.second.get() == name()) {
+        return 1;
+    }
 
+    return 0;
 }
 
 /******************************************************************************/
@@ -60,16 +65,11 @@ int
 amqp::internal::schema::
 Enum::dependsOnList (const amqp::internal::schema::List & list_) const {
     // does the left hand side depend on us
-    DBG ("  L/L a) " << list.listOf() << " == " << name() << std::endl); // NOLINT
     if (list_.listOf() == name()) {
-        return 1;
-    }
-
-    // do we depend on the lhs
-    DBG ("  L/L b) " << name() << " == " << list.name() << std::endl); // NOLINT
-    if (name() == list_.name()) {
         return 2;
     }
+
+    // we can never depend on the left hand side so don't bother checking
 
     return 0;
 }
@@ -83,33 +83,23 @@ Enum::dependsOnEnum (const amqp::internal::schema::Enum &) const {
     return 0;
 }
 
-/******************************************************************************/
-
-int
-amqp::internal::schema::
-Enum::dependsOn (const amqp::internal::schema::Restricted & lhs_) const {
-    return Restricted::dependsOn (lhs_);
-}
-
 /*********************************************************o*********************/
 
 int
 amqp::internal::schema::
-Enum::dependsOn (const amqp::internal::schema::Composite & lhs_) const {
-    auto rtn { 0 };
+Enum::dependsOnRHS (const amqp::internal::schema::Composite & lhs_) const {
+    if (name() == lhs_.name()) {
+        return 1;
+    }
+
     for (const auto & field : lhs_.fields()) {
-        DBG ("L/C a) " << field->resolvedType() << " == " << name() << std::endl); // NOLINT
         if (field->resolvedType() == name()) {
-            rtn = 1;
+            return 2;
         }
     }
 
-    DBG ("  L/C b) " << name() << " == " << lhs_.name() << std::endl); // NOLINT
-    if (name() == lhs_.name()) {
-        rtn = 2;
-    }
 
-    return rtn;
+    return 0;
 }
 
 /*********************************************************o*********************/

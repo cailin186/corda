@@ -52,7 +52,7 @@ Map::Map (
         name_,
         label_,
         provides_,
-        amqp::internal::schema::Restricted::RestrictedTypes::Map)
+        amqp::internal::schema::Restricted::RestrictedTypes::map_t)
 {
     auto [map, of, to] = mapType (name_);
     m_mapOf = { of, to };
@@ -89,14 +89,14 @@ Map::mapOf() const {
 int
 amqp::internal::schema::
 Map::dependsOnMap (const amqp::internal::schema::Map & lhs_) const {
-    // does lhs_ depend on us
-    auto lhsMapOf { lhs_.mapOf() };
-    if (lhsMapOf.first.get() == name() || lhsMapOf.second.get() == name()) {
+    // do we depend on the lhs
+    if (m_mapOf[0] == lhs_.name() || m_mapOf[1] == lhs_.name()) {
         return 1;
     }
 
-    // do we depend on the lhs
-    if (m_mapOf[0] == lhs_.name() || m_mapOf[1] == lhs_.name()) {
+    // does lhs_ depend on us
+    auto lhsMapOf { lhs_.mapOf() };
+    if (lhsMapOf.first.get() == name() || lhsMapOf.second.get() == name()) {
         return 2;
     }
 
@@ -108,13 +108,13 @@ Map::dependsOnMap (const amqp::internal::schema::Map & lhs_) const {
 int
 amqp::internal::schema::
 Map::dependsOnList (const amqp::internal::schema::List & lhs_) const {
-    // does lhs_ depend on us
-    if (lhs_.listOf() == name()) {
+    // do we depend on the lhs
+    if (m_mapOf[0] == lhs_.name() || m_mapOf[1] == lhs_.name()) {
         return 1;
     }
 
-    // do we depend on the lhs
-    if (m_mapOf[0] == lhs_.name() || m_mapOf[1] == lhs_.name()) {
+    // does lhs_ depend on us
+    if (lhs_.listOf() == name()) {
         return 2;
     }
 
@@ -126,13 +126,13 @@ Map::dependsOnList (const amqp::internal::schema::List & lhs_) const {
 int
 amqp::internal::schema::
 Map::dependsOnEnum (const amqp::internal::schema::Enum & lhs_) const {
-    // does lhs_ depend on us
-    if (lhs_.name() == name()) {
+    // do we depend on the lhs
+    if (m_mapOf[0] == lhs_.name() || m_mapOf[1] == lhs_.name()) {
         return 1;
     }
 
-    // do we depend on the lhs
-    if (m_mapOf[0] == lhs_.name() || m_mapOf[1] == lhs_.name()) {
+    // does lhs_ depend on us
+    if (lhs_.name() == name()) {
         return 2;
     }
 
@@ -143,30 +143,20 @@ Map::dependsOnEnum (const amqp::internal::schema::Enum & lhs_) const {
 
 int
 amqp::internal::schema::
-Map::dependsOn (const amqp::internal::schema::Composite & lhs_) const  {
-    auto rtn { 0 };
+Map::dependsOnRHS (const amqp::internal::schema::Composite & lhs_) const  {
+    // do we depend on the lhs
+    if (m_mapOf[0] == lhs_.name() || m_mapOf[1] == lhs_.name()) {
+        return 1;
+    }
 
     // does lhs_ depend on us
     for (const auto & field : lhs_.fields()) {
         if (field->resolvedType() == name()) {
-            rtn = 1;
+            return 2;
         }
     }
 
-    // do we depend on the lhs
-    if (m_mapOf[0] == lhs_.name() || m_mapOf[1] == lhs_.name()) {
-        rtn = 2;
-    }
-
-    return rtn;
-}
-
-/******************************************************************************/
-
-int
-amqp::internal::schema::
-Map::dependsOn (const Restricted & lhs_) const {
-    return Restricted::dependsOn (lhs_);
+    return 0;
 }
 
 /******************************************************************************/

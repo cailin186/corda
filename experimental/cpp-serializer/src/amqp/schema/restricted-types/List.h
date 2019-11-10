@@ -6,15 +6,6 @@
 
 namespace amqp::internal::schema {
 
-    class Map;
-    class Enum;
-
-}
-
-/******************************************************************************/
-
-namespace amqp::internal::schema {
-
     class List : public Restricted {
         public :
             static std::pair<std::string, std::string> listType (
@@ -23,9 +14,9 @@ namespace amqp::internal::schema {
         private :
             std::vector<std::string> m_listOf;
 
-            int dependsOnMap (const class Map &) const override;
-            int dependsOnList (const class List &) const override;
-            int dependsOnEnum (const class Enum &) const override;
+            int dependsOnMap (const Map &) const override;
+            int dependsOnList (const List &) const override;
+            int dependsOnEnum (const Enum &) const override;
 
         public :
             List (
@@ -40,10 +31,7 @@ namespace amqp::internal::schema {
 
             const std::string & listOf() const;
 
-            int dependsOn (const class Composite &) const override;
-            int dependsOn (const class Restricted & lhs_) const override {
-                return Restricted::dependsOn (lhs_);
-            }
+            int dependsOnRHS (const Composite &) const override;
     };
 
 }

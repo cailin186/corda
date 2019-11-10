@@ -44,15 +44,15 @@ operator << (
     const amqp::internal::schema::Restricted::RestrictedTypes & type_)
 {
     switch (type_) {
-        case Restricted::RestrictedTypes::List : {
+        case Restricted::RestrictedTypes::list_t : {
             stream_ << "list";
             break;
         }
-        case Restricted::RestrictedTypes::Map : {
+        case Restricted::RestrictedTypes::map_t : {
             stream_ << "map";
             break;
         }
-        case Restricted::RestrictedTypes::Enum : {
+        case Restricted::RestrictedTypes::enum_t : {
             stream_ << "enum";
             break;
         }
@@ -133,7 +133,7 @@ Restricted::Restricted (
 amqp::internal::schema::AMQPTypeNotation::Type
 amqp::internal::schema::
 Restricted::type() const {
-    return AMQPTypeNotation::Type::Restricted;
+    return AMQPTypeNotation::Type::restricted_t;
 }
 
 /******************************************************************************/
@@ -149,7 +149,7 @@ Restricted::restrictedType() const {
 int
 amqp::internal::schema::
 Restricted::dependsOn (const OrderedTypeNotation & rhs_) const {
-    return dynamic_cast<const AMQPTypeNotation &>(rhs_).dependsOn (*this);
+    return dynamic_cast<const AMQPTypeNotation &>(rhs_).dependsOnRHS (*this);
 }
 
 /*********************************************************o*********************/
@@ -162,15 +162,15 @@ Restricted::dependsOn (const OrderedTypeNotation & rhs_) const {
  */
 int
 amqp::internal::schema::
-Restricted::dependsOn (const Restricted & lhs_) const  {
-    switch ( lhs_.restrictedType()) {
-        case Restricted::RestrictedTypes::Map :
+Restricted::dependsOnRHS (const Restricted & lhs_) const  {
+    switch (lhs_.restrictedType()) {
+        case Restricted::RestrictedTypes::map_t :
             return dependsOnMap (
                 static_cast<const amqp::internal::schema::Map &>(lhs_)); // NOLINT
-        case Restricted::RestrictedTypes::List :
+        case Restricted::RestrictedTypes::list_t :
             return dependsOnList (
                 static_cast<const amqp::internal::schema::List &>(lhs_)); // NOLINT
-        case Restricted::RestrictedTypes::Enum :
+        case Restricted::RestrictedTypes::enum_t :
             return dependsOnEnum (
                 static_cast<const amqp::internal::schema::Enum &>(lhs_)); // NOLINT
     }

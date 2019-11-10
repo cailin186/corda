@@ -17,9 +17,9 @@ TEST (Map, name1) {
     auto [map, of, to] = amqp::internal::schema::Map::mapType (
             "java.util.Map<int, string>");
 
-    ASSERT_EQ("java.util.Map", map);
-    ASSERT_EQ("int", of);
-    ASSERT_EQ("string", to);
+    ASSERT_EQ ("java.util.Map", map);
+    ASSERT_EQ ("int", of);
+    ASSERT_EQ ("string", to);
 }
 
 /******************************************************************************/
@@ -28,9 +28,9 @@ TEST (Map, name2) {
     auto [map, of, to] = amqp::internal::schema::Map::mapType (
             "java.util.Map<int, java.util.List<string>>");
 
-    ASSERT_EQ("java.util.Map", map);
-    ASSERT_EQ("int", of);
-    ASSERT_EQ("java.util.List<string>", to);
+    ASSERT_EQ ("java.util.Map", map);
+    ASSERT_EQ ("int", of);
+    ASSERT_EQ ("java.util.List<string>", to);
 }
 
 /******************************************************************************/
@@ -39,9 +39,9 @@ TEST (Map, name3) {
     auto [map, of, to] = amqp::internal::schema::Map::mapType (
             "java.util.Map<java.util.Pair<int, int>, java.util.List<string>>");
 
-    ASSERT_EQ("java.util.Map", map);
-    ASSERT_EQ("java.util.Pair<int, int>", of);
-    ASSERT_EQ("java.util.List<string>", to);
+    ASSERT_EQ ("java.util.Map", map);
+    ASSERT_EQ ("java.util.Pair<int, int>", of);
+    ASSERT_EQ ("java.util.List<string>", to);
 }
 
 /******************************************************************************
@@ -69,8 +69,8 @@ TEST (MAP, dependsOn1) {
         auto l = test::list("string");
         auto m = test::map("int", l->name());
 
-        otn.insert(std::move(l));
-        otn.insert(std::move(m));
+        otn.insert (std::move (l));
+        otn.insert (std::move (m));
 
         std::stringstream ss;
         ss << otn;
@@ -166,11 +166,8 @@ TEST (MAP, dependsOn2) {
 
         otn.insert (std::move (m));
 
-        std::cout << otn << std::endl;
         otn.insert (std::move (e));
-        std::cout << otn << std::endl;
         otn.insert (std::move (l));
-        std::cout << otn << std::endl;
 
         std::stringstream ss;
         ss << otn;
